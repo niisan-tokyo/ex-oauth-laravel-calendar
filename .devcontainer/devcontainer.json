@@ -1,0 +1,10 @@
+{
+    "name": "oauth-laravel",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "workspace",
+    "workspaceFolder": "/var/www",
+    "settings": {
+        "editor.tabSize": 4
+    },
+    "shutdownAction": "stopCompose"
+}
