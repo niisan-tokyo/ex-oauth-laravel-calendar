@@ -23,5 +23,11 @@
             </li>
         @endforeach
     </ul>
+    <h2>休日</h2>
+    <ul>
+    @foreach ($holidays as $key => $holiday)
+    <li>{{ $key }}: {{ $holiday }}</li>
+    @endforeach
+    </ul>
 </body>
 </html>

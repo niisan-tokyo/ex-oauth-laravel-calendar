@@ -26,6 +26,7 @@ class TodoController extends Controller
         $user = Auth::user();
         return view('todo.index', [
             'events' => $this->service->getEventList($user->googleUser),
+            'holidays' => $this->service->getHolidays($user->googleUser),
             'todo' => $user->todo
         ]);
     }

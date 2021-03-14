@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "657060845222fa09403341cc095c6ddf",
+    "content-hash": "637fe84fa385ffed4c5b5173a6a5c477",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1933,6 +1933,54 @@
                 }
             ],
             "time": "2021-02-11T18:30:17+00:00"
+        },
+        {
+            "name": "niisan/laravel-oauth-google-calendar",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/niisan-tokyo/oauth-google-calendar.git",
+                "reference": "42740d8373d2ebfd39e775c19fb73d37d5b48585"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/niisan-tokyo/oauth-google-calendar/zipball/42740d8373d2ebfd39e775c19fb73d37d5b48585",
+                "reference": "42740d8373d2ebfd39e775c19fb73d37d5b48585",
+                "shasum": ""
+            },
+            "require": {
+                "google/apiclient": "^2.9",
+                "illuminate/support": "^5.8|^6.0|^7.0|^8.0",
+                "nesbot/carbon": "^2.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.4",
+                "phpunit/phpunit": "^9.5"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Niisan\\Laravel\\GoogleCalendar\\OauthCalendarServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Niisan\\Laravel\\GoogleCalendar\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Using Google Calendar Api by using OAuth in Laravel.",
+            "support": {
+                "issues": "https://github.com/niisan-tokyo/oauth-google-calendar/issues",
+                "source": "https://github.com/niisan-tokyo/oauth-google-calendar/tree/main"
+            },
+            "time": "2021-03-07T00:08:25+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -7996,7 +8044,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "niisan/laravel-oauth-google-calendar": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

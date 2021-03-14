@@ -6,14 +6,16 @@ use Carbon\Carbon;
 use Google_Client;
 use Google_Service_Calendar;
 use Google_Service_Calendar_Event;
+use Illuminate\Support\Facades\Log;
+use Niisan\Laravel\GoogleCalendar\OauthCalendarService;
 
 class CalendarService
 {
-    private Google_Client $client;
+    private OauthCalendarService $oauthCalendarService;
 
-    public function __construct(Google_Client $client)
+    public function __construct(OauthCalendarService $oauthCalendarService)
     {
-        $this->client = $client;
+        $this->oauthCalendarService = $oauthCalendarService;
     }
 
     /**
@@ -25,33 +27,22 @@ class CalendarService
      */
     public function getEventList(GoogleUser $user)
     {
-        $this->setAccessToken($user);
-        $service = new Google_Service_Calendar($this->client);
-        $events = $service->events->listEvents('primary', [
-            'timeMin' => Carbon::now()->subDays(7)->format(DATE_RFC3339),
-            'timeMax' => Carbon::now()->addDays(7)->format(DATE_RFC3339)
+        $events = $this->oauthCalendarService->getEventList($user, [
+            'timeMin' => Carbon::now()->subDays(7)->format('Y-m-d H:i:s'),
+            'timeMax' => Carbon::now()->addDays(7)->format('Y-m-d H:i:s'),
         ]);
         $ret = [];
-
-        while(true) {
-            foreach ($events->getItems() as $event) {
-                if ($event->start and $event->end) {
-                    $ret[] = [
-                        'id' => $event->id,
-                        'summary' => $event->getSummary(),
-                        'start' => $event->start->dateTime,
-                        'end' => $event->end->dateTime
-                    ];
-                }
-            }
-            $pageToken = $events->getNextPageToken();
-            if ($pageToken) {
-                $optParams = array('pageToken' => $pageToken);
-                $events = $service->events->listEvents('primary', $optParams);
-            } else {
-                break;
+        foreach ($events as $event) {
+            if ($event->start and $event->end) {
+                $ret[] = [
+                    'id' => $event->id,
+                    'summary' => $event->getSummary(),
+                    'start' => $event->start->dateTime,
+                    'end' => $event->end->dateTime
+                ];
             }
         }
+        
         return $ret;
     }
 
@@ -65,19 +56,13 @@ class CalendarService
      */
     public function createEvent(array $data, GoogleUser $user): string
     {
-        $event = new Google_Service_Calendar_Event([
-            'summary' => $data['summary'],
-            'start' => [
-                'dateTime' => Carbon::parse($data['start'])->format(DATE_RFC3339)
-            ],
-            'end' => [
-                'dateTime' => Carbon::parse($data['end'])->format(DATE_RFC3339)
-            ]
-        ]);
-        $this->setAccessToken($user);
-        $service = new Google_Service_Calendar($this->client);
-        $new_event = $service->events->insert('primary', $event);
-        return $new_event->id;
+        $event = $this->oauthCalendarService->createEvent($user, $data);
+        return $event->id;
+    }
+
+    public function getHolidays(GoogleUser $user): array
+    {
+        return $this->oauthCalendarService->getHolidays($user);
     }
 
     /**
@@ -89,27 +74,6 @@ class CalendarService
      */
     public function deleteEvent($event_id, GoogleUser $user)
     {
-        $this->setAccessToken($user);
-        $service = new Google_Service_Calendar($this->client);
-        return $service->events->delete('primary', $event_id);
-    }
-
-    /**
-     * アクセストークンのセット
-     * 
-     * @param GoogleUser $user
-     * 
-     * @return void
-     */
-    private function setAccessToken(GoogleUser $user):void
-    {
-        if (Carbon::now()->timestamp >= $user->expires - 30) {
-            $token = $this->client->fetchAccessTokenWithRefreshToken($user->refresh_token);
-            $user->access_token = $token['access_token'];
-            $user->expires = Carbon::now()->timestamp + $token['expires_in'];
-            $user->save();
-        }
-
-        $this->client->setAccessToken($user->access_token);
+        return $this->oauthCalendarService->deleteEvent($user, $event_id);
     }
 }

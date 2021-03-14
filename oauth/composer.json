@@ -15,7 +15,8 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
         "laravel/socialite": "^5.1",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "niisan/laravel-oauth-google-calendar": "dev-main"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
